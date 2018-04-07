@@ -11,7 +11,7 @@ using System;
 namespace AspTodo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180407004253_initialCreate")]
+    [Migration("20180407073441_initialCreate")]
     partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,19 +102,26 @@ namespace AspTodo.Migrations
 
             modelBuilder.Entity("AspTodo.Models.TodoItem", b =>
                 {
-                    b.Property<string>("ListID");
-
-                    b.Property<int>("ItemOrder");
+                    b.Property<string>("ItemID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<bool>("Completed");
 
-                    b.Property<DateTime>("DueDate");
+                    b.Property<DateTime?>("DueDate");
 
-                    b.Property<string>("ItemName");
+                    b.Property<string>("ItemName")
+                        .IsRequired();
+
+                    b.Property<int>("ItemOrder");
+
+                    b.Property<string>("ListID");
 
                     b.Property<string>("Notes");
 
-                    b.HasKey("ListID", "ItemOrder");
+                    b.HasKey("ItemID");
+
+                    b.HasIndex("ListID", "ItemOrder")
+                        .IsUnique();
 
                     b.ToTable("TodoItems");
                 });
@@ -124,7 +131,8 @@ namespace AspTodo.Migrations
                     b.Property<string>("ListID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ListName");
+                    b.Property<string>("ListName")
+                        .IsRequired();
 
                     b.Property<string>("OwnerID");
 
@@ -277,8 +285,7 @@ namespace AspTodo.Migrations
                 {
                     b.HasOne("AspTodo.Models.TodoList", "TodoList")
                         .WithMany("TodoItems")
-                        .HasForeignKey("ListID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ListID");
                 });
 
             modelBuilder.Entity("AspTodo.Models.TodoList", b =>

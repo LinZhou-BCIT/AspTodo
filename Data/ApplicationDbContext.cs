@@ -25,11 +25,16 @@ namespace AspTodo.Data
         {
             // Primary keys
             builder.Entity<TodoList>().HasKey(tl => tl.ListID);
-            builder.Entity<TodoItem>().HasKey(ti => new { ti.ListID, ti.ItemOrder });
+            builder.Entity<TodoItem>().HasKey(ti => ti.ItemID);
             builder.Entity<Sharing>().HasKey(s => new { s.ListID, s.ShareeID });
             builder.Entity<Invitation>().HasKey(i => new { i.SenderID, i.ReceiverID, i.ListID });
-            
-            // One to many relationships
+
+            // Unique indices
+            builder.Entity<TodoItem>()
+                .HasIndex(ti => new { ti.ListID, ti.ItemOrder })
+                .IsUnique();
+
+            // Foreign Key constraints
             builder.Entity<TodoList>()
                 .HasOne(tl => tl.Owner).WithMany(u => u.OwnedLists)
                 .HasForeignKey(tl => tl.OwnerID); // will cascade delete

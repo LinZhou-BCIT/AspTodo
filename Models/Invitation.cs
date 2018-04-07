@@ -14,4 +14,11 @@ namespace AspTodo.Models
         public virtual ApplicationUser Receiver { get; set; }
         public virtual TodoList TodoList { get; set; }
     }
+
+    public class InvitationAPIModel
+    {
+        public string SenderID { get; set; }
+        public string ReceiverID { get; set; }
+        public string ListID { get; set; }
+    }
 }

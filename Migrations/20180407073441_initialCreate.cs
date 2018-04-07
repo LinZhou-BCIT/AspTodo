@@ -158,7 +158,7 @@ namespace AspTodo.Migrations
                 columns: table => new
                 {
                     ListID = table.Column<string>(nullable: false),
-                    ListName = table.Column<string>(nullable: true),
+                    ListName = table.Column<string>(nullable: false),
                     OwnerID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -231,22 +231,23 @@ namespace AspTodo.Migrations
                 name: "TodoItems",
                 columns: table => new
                 {
-                    ListID = table.Column<string>(nullable: false),
-                    ItemOrder = table.Column<int>(nullable: false),
+                    ItemID = table.Column<string>(nullable: false),
                     Completed = table.Column<bool>(nullable: false),
-                    DueDate = table.Column<DateTime>(nullable: false),
-                    ItemName = table.Column<string>(nullable: true),
+                    DueDate = table.Column<DateTime>(nullable: true),
+                    ItemName = table.Column<string>(nullable: false),
+                    ItemOrder = table.Column<int>(nullable: false),
+                    ListID = table.Column<string>(nullable: true),
                     Notes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TodoItems", x => new { x.ListID, x.ItemOrder });
+                    table.PrimaryKey("PK_TodoItems", x => x.ItemID);
                     table.ForeignKey(
                         name: "FK_TodoItems_TodoLists_ListID",
                         column: x => x.ListID,
                         principalTable: "TodoLists",
                         principalColumn: "ListID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -300,6 +301,12 @@ namespace AspTodo.Migrations
                 name: "IX_Sharings_ShareeID",
                 table: "Sharings",
                 column: "ShareeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TodoItems_ListID_ItemOrder",
+                table: "TodoItems",
+                columns: new[] { "ListID", "ItemOrder" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoLists_OwnerID",

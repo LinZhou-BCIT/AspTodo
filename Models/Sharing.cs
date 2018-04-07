@@ -13,4 +13,10 @@ namespace AspTodo.Models
         public virtual TodoList TodoList { get; set; }
 
     }
+
+    public class SharingAPIModel
+    {
+        public string ShareeID { get; set; }
+        public string ListID { get; set; }
+    }
 }

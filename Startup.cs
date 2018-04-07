@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using AspTodo.Data;
 using AspTodo.Models;
 using AspTodo.Services;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AspTodo
 {
@@ -47,6 +50,22 @@ namespace AspTodo
                         .AllowCredentials();
                     });
             });
+
+            // Token authentication
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.AddAuthentication()
+                .AddJwtBearer(cfg => {
+                    cfg.RequireHttpsMetadata = false;
+                    cfg.SaveToken = true;
+                    cfg.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = Configuration["TokenInformation:Issuer"],
+                        ValidAudience = Configuration["TokenInformation:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["TokenInformation:Key"])),
+                        ClockSkew = TimeSpan.Zero // remove delay of token when expire
+                    };
+                });
 
             services.AddMvc();
         }
