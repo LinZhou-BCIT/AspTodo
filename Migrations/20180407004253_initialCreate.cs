@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AspTodo.Data.Migrations
+namespace AspTodo.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,20 +20,6 @@ namespace AspTodo.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                 });
 
             migrationBuilder.CreateTable(
@@ -66,7 +52,7 @@ namespace AspTodo.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Autoincrement", true),
+                        .Annotation("Sqlite:Autoincrement", true),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     RoleId = table.Column<string>(nullable: false)
@@ -87,7 +73,7 @@ namespace AspTodo.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Autoincrement", true),
+                        .Annotation("Sqlite:Autoincrement", true),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
@@ -147,15 +133,132 @@ namespace AspTodo.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName");
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TodoLists",
+                columns: table => new
+                {
+                    ListID = table.Column<string>(nullable: false),
+                    ListName = table.Column<string>(nullable: true),
+                    OwnerID = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoLists", x => x.ListID);
+                    table.ForeignKey(
+                        name: "FK_TodoLists_AspNetUsers_OwnerID",
+                        column: x => x.OwnerID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invitations",
+                columns: table => new
+                {
+                    SenderID = table.Column<string>(nullable: false),
+                    ReceiverID = table.Column<string>(nullable: false),
+                    ListID = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invitations", x => new { x.SenderID, x.ReceiverID, x.ListID });
+                    table.ForeignKey(
+                        name: "FK_Invitations_TodoLists_ListID",
+                        column: x => x.ListID,
+                        principalTable: "TodoLists",
+                        principalColumn: "ListID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invitations_AspNetUsers_ReceiverID",
+                        column: x => x.ReceiverID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invitations_AspNetUsers_SenderID",
+                        column: x => x.SenderID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sharings",
+                columns: table => new
+                {
+                    ListID = table.Column<string>(nullable: false),
+                    ShareeID = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sharings", x => new { x.ListID, x.ShareeID });
+                    table.ForeignKey(
+                        name: "FK_Sharings_TodoLists_ListID",
+                        column: x => x.ListID,
+                        principalTable: "TodoLists",
+                        principalColumn: "ListID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sharings_AspNetUsers_ShareeID",
+                        column: x => x.ShareeID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TodoItems",
+                columns: table => new
+                {
+                    ListID = table.Column<string>(nullable: false),
+                    ItemOrder = table.Column<int>(nullable: false),
+                    Completed = table.Column<bool>(nullable: false),
+                    DueDate = table.Column<DateTime>(nullable: false),
+                    ItemName = table.Column<string>(nullable: true),
+                    Notes = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoItems", x => new { x.ListID, x.ItemOrder });
+                    table.ForeignKey(
+                        name: "FK_TodoItems_TodoLists_ListID",
+                        column: x => x.ListID,
+                        principalTable: "TodoLists",
+                        principalColumn: "ListID",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -173,11 +276,6 @@ namespace AspTodo.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_UserId",
-                table: "AspNetUserRoles",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -187,6 +285,26 @@ namespace AspTodo.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invitations_ListID",
+                table: "Invitations",
+                column: "ListID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invitations_ReceiverID",
+                table: "Invitations",
+                column: "ReceiverID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sharings_ShareeID",
+                table: "Sharings",
+                column: "ShareeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TodoLists_OwnerID",
+                table: "TodoLists",
+                column: "OwnerID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -207,7 +325,19 @@ namespace AspTodo.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Invitations");
+
+            migrationBuilder.DropTable(
+                name: "Sharings");
+
+            migrationBuilder.DropTable(
+                name: "TodoItems");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "TodoLists");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

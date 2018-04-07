@@ -9,5 +9,10 @@ namespace AspTodo.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        public virtual ICollection<TodoList> OwnedLists { get; set; }
+        public virtual ICollection<Sharing> Sharings { get; set; }
+        public virtual ICollection<Invitation> SentInvitations { get; set; }
+        public virtual ICollection<Invitation> ReceivedInvitations { get; set; }
+
     }
 }

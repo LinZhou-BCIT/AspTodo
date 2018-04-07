@@ -36,6 +36,18 @@ namespace AspTodo
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddCors(options => {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                    });
+            });
+
             services.AddMvc();
         }
 
@@ -53,6 +65,8 @@ namespace AspTodo
             }
 
             app.UseStaticFiles();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
 
