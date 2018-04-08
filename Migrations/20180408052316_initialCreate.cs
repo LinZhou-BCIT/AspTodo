@@ -303,10 +303,9 @@ namespace AspTodo.Migrations
                 column: "ShareeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TodoItems_ListID_ItemOrder",
+                name: "IX_TodoItems_ListID",
                 table: "TodoItems",
-                columns: new[] { "ListID", "ItemOrder" },
-                unique: true);
+                column: "ListID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoLists_OwnerID",

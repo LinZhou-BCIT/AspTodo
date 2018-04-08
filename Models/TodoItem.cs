@@ -14,6 +14,7 @@ namespace AspTodo.Models
         public int ItemOrder { get; set; }
         [Required]
         public string ItemName { get; set; }
+        [Required]
         public bool Completed { get; set; }
         public DateTime? DueDate { get; set; }
         public string Notes { get; set; }
@@ -25,11 +26,10 @@ namespace AspTodo.Models
         public string ItemID { get; set; }
         [Required]
         public string ListID { get; set; }
-        [Required]
-        public int ItemOrder { get; set; }
+        public int? ItemOrder { get; set; }
         [Required]
         public string ItemName { get; set; }
-        public bool Completed { get; set; }
+        public bool? Completed { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DueDate { get; set; }
         public string Notes { get; set; }

@@ -11,7 +11,7 @@ using System;
 namespace AspTodo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180407073441_initialCreate")]
+    [Migration("20180408052316_initialCreate")]
     partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,8 +120,7 @@ namespace AspTodo.Migrations
 
                     b.HasKey("ItemID");
 
-                    b.HasIndex("ListID", "ItemOrder")
-                        .IsUnique();
+                    b.HasIndex("ListID");
 
                     b.ToTable("TodoItems");
                 });

@@ -30,9 +30,15 @@ namespace AspTodo.Data
             builder.Entity<Invitation>().HasKey(i => new { i.SenderID, i.ReceiverID, i.ListID });
 
             // Unique indices
-            builder.Entity<TodoItem>()
-                .HasIndex(ti => new { ti.ListID, ti.ItemOrder })
-                .IsUnique();
+
+            // This was originally designed to make the items order state saved in the db
+            // and for each list, the order of each item would be unique;
+            // however completed items do not have to be re-orderable 
+            // and keeping track of completed items' order would make querys inefficient
+            // so instead of enforcing it on the db it's better to enforce it in repos
+            //builder.Entity<TodoItem>()
+            //    .HasIndex(ti => new { ti.ListID, ti.ItemOrder })
+            //    .IsUnique();
 
             // Foreign Key constraints
             builder.Entity<TodoList>()

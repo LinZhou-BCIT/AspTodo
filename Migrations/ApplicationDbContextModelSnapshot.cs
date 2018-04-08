@@ -119,8 +119,7 @@ namespace AspTodo.Migrations
 
                     b.HasKey("ItemID");
 
-                    b.HasIndex("ListID", "ItemOrder")
-                        .IsUnique();
+                    b.HasIndex("ListID");
 
                     b.ToTable("TodoItems");
                 });
