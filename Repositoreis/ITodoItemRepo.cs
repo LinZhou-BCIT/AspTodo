@@ -8,16 +8,17 @@ namespace AspTodo.Repositoreis
 {
     public interface ITodoItemRepo
     {
-        Task<TodoItemAPIModel> CreateItemAsync(TodoItemAPIModel newItemModel);
-        Task<IEnumerable<TodoItemAPIModel>> GetAllItemsForListAsync(string listID);
-        Task<IEnumerable<TodoItemAPIModel>> GetActiveItemsForListAsync(string listID);
-        Task<IEnumerable<TodoItemAPIModel>> GetCompletedItemsForListAsync(string listID);
-        Task<TodoItemAPIModel> GetItemByIDAsync(string itemID);
-        Task<TodoItemAPIModel> UpdateItemAsync(string itemID, TodoItemAPIModel updatedItemModel);
-        Task<IEnumerable<TodoItemAPIModel>> UpdateAllItemsInListAsync(string listID, TodoItemAPIModel[] items);
+        Task<TodoItem> CreateItemAsync(TodoItem newItem);
+        Task<TodoItem> GetItemByIDAsync(string itemID);
+        Task<TodoItem> UpdateItemAsync(TodoItem updatedItem);
+        Task<bool> RemoveItemAsync(string itemID);
+
+        Task<IEnumerable<TodoItem>> UpdateAllItemsInListAsync(TodoItem[] items);
+        Task<IEnumerable<TodoItem>> GetAllItemsForListAsync(string listID);
+        Task<IEnumerable<TodoItem>> GetActiveItemsForListAsync(string listID);
+        Task<IEnumerable<TodoItem>> GetCompletedItemsForListAsync(string listID);
 
         Task<bool> ToggleItemCompleteAsync(string itemID);
-        Task<bool> RemoveListAsync(string ListID);
-
+        Task<bool> SaveAsync();
     }
 }

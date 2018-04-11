@@ -21,108 +21,139 @@ namespace AspTodo.Repositoreis
         // another would be making an error Enum and throw them for the controller to catch
         // I'll come back to it if I have the time
 
-        // methods in this repo also does not handle db exceptions
-        // so that's another thing to improve given time
-        public async Task<TodoListAPIModel> CreateListAsync(TodoListAPIModel newListModel)
+        public async Task<TodoList> CreateListAsync(TodoList newList)
         {
-            TodoList newList = new TodoList()
-            {
-                ListID = Guid.NewGuid().ToString(),
-                ListName = newListModel.ListName,
-                OwnerID = newListModel.OwnerID
-            };
-            await _context.TodoLists.AddAsync(newList);
-            await _context.SaveChangesAsync();
-            return ConvertToAPIModel(newList);
+            // Assume guid is generated in the service layer
+            //TodoList createdList = new TodoList()
+            //{
+            //    ListID = Guid.NewGuid().ToString(),
+            //    ListName = newList.ListName,
+            //    OwnerID = newList.OwnerID
+            //};
+            var result = await _context.TodoLists.AddAsync(newList);
+            //await _context.SaveChangesAsync();
+            return newList;
         }
 
-        public async Task<TodoListAPIModel> CreateListAsync(string listName, string ownerID)
+        public async Task<TodoList> GetListByIDAsync(string listID)
         {
-            TodoList newList = new TodoList()
-            {
-                ListID = Guid.NewGuid().ToString(),
-                ListName = listName,
-                OwnerID = ownerID
-            };
-            await _context.TodoLists.AddAsync(newList);
-            await _context.SaveChangesAsync();
-            return ConvertToAPIModel(newList);
-
+            TodoList list = await _context.TodoLists
+                .Where(tl => tl.ListID == listID).FirstOrDefaultAsync();
+            return list;
         }
-        public async Task<IEnumerable<TodoListAPIModel>> GetOwnedListsAsync(string userID)
+        public async Task<TodoList> UpdateListAsync(TodoList updatedList)
         {
-            IQueryable<TodoListAPIModel> ownedLists = _context.TodoLists
-                .Where(tl => tl.OwnerID == userID)
-                .Select(tl => ConvertToAPIModel(tl));
-            return await ownedLists.ToListAsync();
-        }
-        public async Task<IEnumerable<TodoListAPIModel>> GetSharedListsAsync(string userID)
-        {
-            IQueryable<TodoListAPIModel> sharedLists = _context.TodoLists
-                .Join(_context.Sharings, 
-                        tl => tl.ListID, 
-                        s => s.ListID,
-                        (tl, s) => new { tl, s })
-                        .Where(joined => joined.s.ShareeID == userID)
-                        .Select(j => ConvertToAPIModel(j.tl));
-            return await sharedLists.ToListAsync();
-        }
-        public async Task<TodoListAPIModel> GetListByIDAsync(string listID)
-        {
-            IQueryable<TodoListAPIModel> query = _context.TodoLists
-                .Where(tl => tl.ListID == listID)
-                .Select(tl => ConvertToAPIModel(tl));
-            return await query.FirstOrDefaultAsync();
-        }
-        public async Task<TodoListAPIModel> UpdateListAsync(TodoListAPIModel updatedListModel)
-        {
-            TodoList todoList = await _context.TodoLists
-                .Where(tl => tl.ListID == updatedListModel.ListID).FirstOrDefaultAsync();
-            if(!String.IsNullOrEmpty(updatedListModel.ListName) && updatedListModel.ListName != todoList.ListName)
-            {
-                todoList.ListName = updatedListModel.ListName;
-            }
             // the validity of ownerID foreign key constraint is up to the controller to validate via usermanager
-            if (!String.IsNullOrEmpty(updatedListModel.OwnerID) && updatedListModel.OwnerID != todoList.OwnerID)
-            {
-                todoList.OwnerID = updatedListModel.OwnerID;
-            }
-            await _context.SaveChangesAsync();
-            return ConvertToAPIModel(todoList);
-        }
+            // TodoList todoList = await GetListByIDAsync(updatedListModel.ListID);
 
-        public async Task<bool> LeaveSharedListAsync(string userID, string listID)
-        {
-            Sharing sharing = await _context.Sharings.Select(s => s)
-                .Where(s => s.ListID == listID && s.ShareeID == userID).FirstOrDefaultAsync();
-            if (sharing != null)
-            {
-                _context.Sharings.Remove(sharing);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            // this basically means not found
-            return false;
+            // check if list exist? ***************
+            _context.TodoLists.Attach(updatedList);
+            _context.Entry(updatedList).State = EntityState.Modified;
+            //await _context.SaveChangesAsync();
+            return updatedList;
         }
         public async Task<bool> RemoveListAsync(string listID)
         {
-            TodoList todoList = await _context.TodoLists.Select(tl => tl)
-                .Where(tl => tl.ListID == listID).FirstOrDefaultAsync();
+            TodoList todoList = await GetListByIDAsync(listID);
             if (todoList != null)
             {
                 _context.TodoLists.Remove(todoList);
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
                 return true;
             }
             // this basically means not found
             return false;
         }
 
-        private TodoListAPIModel ConvertToAPIModel(TodoList list) => new TodoListAPIModel()
+        public async Task<IEnumerable<TodoList>> GetOwnedListsAsync(string userID)
         {
-            ListID = list.ListID,
-            ListName = list.ListName,
-            OwnerID = list.OwnerID
-        };
+            IQueryable<TodoList> ownedLists = _context.TodoLists
+                .Where(tl => tl.OwnerID == userID);
+            return await ownedLists.ToListAsync();
+        }
+        public async Task<IEnumerable<TodoList>> GetSharedListsAsync(string userID)
+        {
+            IQueryable<TodoList> sharedLists = _context.TodoLists
+                .Join(_context.Sharings,
+                        tl => tl.ListID,
+                        s => s.ListID,
+                        (tl, s) => new { tl, s })
+                        .Where(joined => joined.s.ShareeID == userID)
+                        .Select(j => j.tl);
+            return await sharedLists.ToListAsync();
+        }
+
+        public async Task<bool> JoinSharedListAsync(string userID, string listID)
+        {
+            Sharing sharing = await GetSharingAsync(userID, listID);
+            // maybe check if list exist here? or wait to catch sqlexception?
+            if (sharing == null)
+            {
+                Sharing newSharing = new Sharing()
+                {
+                    ListID = listID,
+                    ShareeID = userID
+                };
+                await _context.Sharings.AddAsync(newSharing);
+                return true;
+            }
+            // already in shared list
+            return false;
+        }
+        public async Task<bool> LeaveSharedListAsync(string userID, string listID)
+        {
+            Sharing sharing = await GetSharingAsync(userID, listID);
+            if (sharing != null)
+            {
+                _context.Sharings.Remove(sharing);
+                //await _context.SaveChangesAsync();
+                return true;
+            }
+            // this basically means not found
+            return false;
+        }
+
+        public async Task<bool> IsOwnerAsync(string userID, string listID)
+        {
+            TodoList todoList = await _context.TodoLists
+                .Where(tl => tl.ListID == listID && tl.OwnerID == userID).FirstOrDefaultAsync();
+            if (todoList == null)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
+        }
+        public async Task<Sharing> GetSharingAsync(string userID, string listID)
+        {
+            Sharing sharing = await _context.Sharings.Select(s => s)
+                .Where(s => s.ListID == listID && s.ShareeID == userID).FirstOrDefaultAsync();
+            return sharing;
+        }
+
+
+        public async Task<bool> SaveAsync()
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            // this might not work? *************
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        // Not that Automapper is a thing...
+
+        //private TodoListAPIModel ConvertToAPIModel(TodoList list) => new TodoListAPIModel()
+        //{
+        //    ListID = list.ListID,
+        //    ListName = list.ListName,
+        //    OwnerID = list.OwnerID
+        //};
     }
 }

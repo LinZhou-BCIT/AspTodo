@@ -21,9 +21,7 @@ namespace AspTodo.Models
     public class TodoListAPIModel
     {
         public string ListID { get; set; }
-        [Required]
         public string ListName { get; set; }
-        [Required]
         public string OwnerID { get; set; }
     }
 }

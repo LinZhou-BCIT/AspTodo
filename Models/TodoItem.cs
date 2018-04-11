@@ -24,10 +24,8 @@ namespace AspTodo.Models
     public class TodoItemAPIModel
     {
         public string ItemID { get; set; }
-        [Required]
         public string ListID { get; set; }
         public int? ItemOrder { get; set; }
-        [Required]
         public string ItemName { get; set; }
         public bool? Completed { get; set; }
         [DataType(DataType.Date)]

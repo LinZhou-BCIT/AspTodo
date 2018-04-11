@@ -8,15 +8,18 @@ namespace AspTodo.Repositoreis
 {
     public interface ITodoListRepo
     {
-        Task<TodoListAPIModel> CreateListAsync(TodoListAPIModel newListModel);
-        Task<TodoListAPIModel> CreateListAsync(string listName, string ownerID);
-        Task<IEnumerable<TodoListAPIModel>> GetOwnedListsAsync(string userID);
-        Task<IEnumerable<TodoListAPIModel>> GetSharedListsAsync(string userID);
-        Task<TodoListAPIModel> GetListByIDAsync(string listID);
-        Task<TodoListAPIModel> UpdateListAsync(TodoListAPIModel updatedListModel);
-
-        Task<bool> LeaveSharedListAsync(string userID, string listID);
+        Task<TodoList> CreateListAsync(TodoList newList);
+        Task<TodoList> GetListByIDAsync(string listID);
+        Task<TodoList> UpdateListAsync(TodoList updatedList);
         Task<bool> RemoveListAsync(string listID);
 
+        Task<IEnumerable<TodoList>> GetOwnedListsAsync(string userID);
+        Task<IEnumerable<TodoList>> GetSharedListsAsync(string userID);
+        Task<bool> JoinSharedListAsync(string userID, string listID);
+        Task<bool> LeaveSharedListAsync(string userID, string listID);
+        Task<bool> IsOwnerAsync(string userID, string listID);
+        Task<Sharing> GetSharingAsync(string userID, string listID);
+
+        Task<bool> SaveAsync();
     }
 }

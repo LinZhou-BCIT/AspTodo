@@ -14,6 +14,7 @@ using AspTodo.Services;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AspTodo.Repositoreis;
 
 namespace AspTodo
 {
@@ -66,7 +67,8 @@ namespace AspTodo
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
-
+            services.AddSingleton<ITodoListRepo, TodoListRepo>();
+            services.AddSingleton<ITodoItemRepo, TodoItemRepo>();
             services.AddMvc();
         }
 
