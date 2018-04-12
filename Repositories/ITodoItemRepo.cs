@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspTodo.Repositoreis
+namespace AspTodo.Repositories
 {
     public interface ITodoItemRepo
     {
@@ -13,12 +13,13 @@ namespace AspTodo.Repositoreis
         Task<TodoItem> UpdateItemAsync(TodoItem updatedItem);
         Task<bool> RemoveItemAsync(string itemID);
 
-        Task<IEnumerable<TodoItem>> UpdateAllItemsInListAsync(TodoItem[] items);
+        //Task<IEnumerable<TodoItem>> UpdateAllItemsInListAsync(TodoItem[] items);
         Task<IEnumerable<TodoItem>> GetAllItemsForListAsync(string listID);
         Task<IEnumerable<TodoItem>> GetActiveItemsForListAsync(string listID);
         Task<IEnumerable<TodoItem>> GetCompletedItemsForListAsync(string listID);
 
         Task<bool> ToggleItemCompleteAsync(string itemID);
+        //Task<int> GetLargestOrderAsync(string listID);
         Task<bool> SaveAsync();
     }
 }

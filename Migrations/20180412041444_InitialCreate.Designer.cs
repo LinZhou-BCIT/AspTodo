@@ -11,8 +11,8 @@ using System;
 namespace AspTodo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180408052316_initialCreate")]
-    partial class initialCreate
+    [Migration("20180412041444_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -109,10 +109,9 @@ namespace AspTodo.Migrations
 
                     b.Property<DateTime?>("DueDate");
 
-                    b.Property<string>("ItemName")
-                        .IsRequired();
+                    b.Property<string>("ItemName");
 
-                    b.Property<int>("ItemOrder");
+                    b.Property<float>("ItemOrder");
 
                     b.Property<string>("ListID");
 

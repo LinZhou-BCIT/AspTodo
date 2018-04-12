@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace AspTodo.Models.Dtos
 {
-    public class TodoListCreateDto
+    public class ForgotPasswordDto
     {
         [Required]
-        public string ListName { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }

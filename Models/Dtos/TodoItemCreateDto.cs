@@ -10,10 +10,11 @@ namespace AspTodo.Models.Dtos
     {
         [Required]
         public string ListID { get; set; }
-        public int? ItemOrder { get; set; }
+        [Required]
+        public float ItemOrder { get; set; }
         [Required]
         public string ItemName { get; set; }
-        public bool? Completed { get; set; }
+        public bool Completed { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DueDate { get; set; }
         public string Notes { get; set; }

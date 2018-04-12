@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AspTodo.Migrations
 {
-    public partial class initialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -234,8 +234,8 @@ namespace AspTodo.Migrations
                     ItemID = table.Column<string>(nullable: false),
                     Completed = table.Column<bool>(nullable: false),
                     DueDate = table.Column<DateTime>(nullable: true),
-                    ItemName = table.Column<string>(nullable: false),
-                    ItemOrder = table.Column<int>(nullable: false),
+                    ItemName = table.Column<string>(nullable: true),
+                    ItemOrder = table.Column<float>(nullable: false),
                     ListID = table.Column<string>(nullable: true),
                     Notes = table.Column<string>(nullable: true)
                 },

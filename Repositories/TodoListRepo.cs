@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspTodo.Repositoreis
+namespace AspTodo.Repositories
 {
     public class TodoListRepo: ITodoListRepo
     {

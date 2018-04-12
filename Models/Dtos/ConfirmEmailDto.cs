@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace AspTodo.Models.Dtos
 {
-    public class TodoListCreateDto
+    public class ConfirmEmailDto
     {
         [Required]
-        public string ListName { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        public string Code { get; set; }
     }
 }

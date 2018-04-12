@@ -108,10 +108,9 @@ namespace AspTodo.Migrations
 
                     b.Property<DateTime?>("DueDate");
 
-                    b.Property<string>("ItemName")
-                        .IsRequired();
+                    b.Property<string>("ItemName");
 
-                    b.Property<int>("ItemOrder");
+                    b.Property<float>("ItemOrder");
 
                     b.Property<string>("ListID");
 

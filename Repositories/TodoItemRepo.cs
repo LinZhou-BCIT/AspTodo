@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspTodo.Repositoreis
+namespace AspTodo.Repositories
 {
     public class TodoItemRepo : ITodoItemRepo
     {
@@ -75,20 +75,20 @@ namespace AspTodo.Repositoreis
             return await completedItems.ToListAsync();
         }
 
-        public async Task<IEnumerable<TodoItem>> UpdateAllItemsInListAsync(TodoItem[] items)
-        {
-            List<TodoItem> updatedItems = new List<TodoItem>();
-            // ef core does not support mass update for now it seems
-            foreach (TodoItem item in items)
-            {
-                TodoItem updatedItem = await UpdateItemAsync(item);
-                if (updatedItem != null)
-                {
-                    updatedItems.Add(updatedItem);
-                }                
-            }
-            return updatedItems;
-        }
+        //public async Task<IEnumerable<TodoItem>> UpdateAllItemsInListAsync(TodoItem[] items)
+        //{
+        //    List<TodoItem> updatedItems = new List<TodoItem>();
+        //    // ef core does not support mass update for now it seems
+        //    foreach (TodoItem item in items)
+        //    {
+        //        TodoItem updatedItem = await UpdateItemAsync(item);
+        //        if (updatedItem != null)
+        //        {
+        //            updatedItems.Add(updatedItem);
+        //        }                
+        //    }
+        //    return updatedItems;
+        //}
 
         public async Task<bool> ToggleItemCompleteAsync(string itemID)
         {
@@ -98,20 +98,20 @@ namespace AspTodo.Repositoreis
             return true;
         }
 
-        // Get largest order for active items in list
-        public async Task<int> GetLargestOrderAsync(string listID)
-        {
-            TodoItem lastItem = await _context.TodoItems
-                .Where(ti => ti.ListID == listID && !ti.Completed)
-                .OrderByDescending(ti => ti.ItemOrder).FirstAsync();
-            if (lastItem != null)
-            {
-                return lastItem.ItemOrder;
-            } else
-            {
-                return 0;
-            }
-        }
+        //// Get largest order for active items in list
+        //public async Task<int> GetLargestOrderAsync(string listID)
+        //{
+        //    TodoItem lastItem = await _context.TodoItems
+        //        .Where(ti => ti.ListID == listID && !ti.Completed)
+        //        .OrderByDescending(ti => ti.ItemOrder).FirstAsync();
+        //    if (lastItem != null)
+        //    {
+        //        return lastItem.ItemOrder;
+        //    } else
+        //    {
+        //        return 0;
+        //    }
+        //}
 
         //private TodoItemAPIModel ConvertToAPIModel(TodoItem item) => new TodoItemAPIModel()
         //{
