@@ -25,7 +25,7 @@ namespace AspTodo.Models
         public float ItemOrder { get; set; }
         public string ItemName { get; set; }
         public bool Completed { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public string Notes { get; set; }
     }
 }

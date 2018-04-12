@@ -15,6 +15,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AspTodo.Repositories;
+using AutoMapper;
+using AspTodo.Models.Dtos;
 
 namespace AspTodo
 {
@@ -67,10 +69,15 @@ namespace AspTodo
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
-            services.AddSingleton<ITodoListRepo, TodoListRepo>();
-            services.AddSingleton<ITodoItemRepo, TodoItemRepo>();
-            services.AddSingleton<ITodoValidator, TodoValidator>();
-
+            services.AddScoped<ITodoListRepo, TodoListRepo>();
+            services.AddScoped<ITodoItemRepo, TodoItemRepo>();
+            services.AddScoped<ITodoValidator, TodoValidator>();
+            Mapper.Initialize(cfg => {
+                cfg.CreateMap<TodoListCreateDto, TodoList>();
+                cfg.CreateMap<TodoListUpdateDto, TodoList>();
+                cfg.CreateMap<TodoItemCreateDto, TodoItem>();
+                cfg.CreateMap<TodoItemUpdateDto, TodoItem>();
+                });
             services.Configure<IdentityOptions>(options => {
                 //// Password settings if you want to ensure password strength.
                 //options.Password.RequireDigit           = true;

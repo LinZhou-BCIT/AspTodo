@@ -13,7 +13,7 @@ namespace AspTodo.Repositories
         private ITodoListRepo _todoListRepo;
         private ITodoItemRepo _todoItemRepo;
 
-        public TodoValidator(TodoListRepo todoListRepo, ITodoItemRepo todoItemRepo)
+        public TodoValidator(ITodoListRepo todoListRepo, ITodoItemRepo todoItemRepo)
         {
             _todoListRepo = todoListRepo;
             _todoItemRepo = todoItemRepo;
