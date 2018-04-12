@@ -28,7 +28,7 @@ namespace AspTodo.Repositories
         Task<IEnumerable<TodoItemAPIModel>> GetActiveItemsForListAsync(string userID, string listID);
         Task<IEnumerable<TodoItemAPIModel>> GetCompletedItemsForListAsync(string userID, string listID);
 
-        Task<bool> ToggleItemCompleteAsync(string userID, string itemID);
+        Task<TodoItemAPIModel> ToggleItemCompleteAsync(string userID, string itemID);
 
     }
 }

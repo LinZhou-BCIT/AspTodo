@@ -18,7 +18,7 @@ namespace AspTodo.Repositories
         Task<IEnumerable<TodoItem>> GetActiveItemsForListAsync(string listID);
         Task<IEnumerable<TodoItem>> GetCompletedItemsForListAsync(string listID);
 
-        Task<bool> ToggleItemCompleteAsync(string itemID);
+        Task<TodoItem> ToggleItemCompleteAsync(string itemID);
         //Task<int> GetLargestOrderAsync(string listID);
         Task<bool> SaveAsync();
     }

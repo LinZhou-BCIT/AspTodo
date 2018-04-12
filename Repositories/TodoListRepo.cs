@@ -116,7 +116,7 @@ namespace AspTodo.Repositories
         public async Task<bool> IsOwnerAsync(string userID, string listID)
         {
             TodoList todoList = await _context.TodoLists
-                .Where(tl => tl.ListID == listID && tl.OwnerID == userID).FirstOrDefaultAsync();
+                .Where(tl => tl.ListID == listID && tl.OwnerID == userID).AsNoTracking().FirstOrDefaultAsync();
             if (todoList == null)
             {
                 return false;
@@ -128,7 +128,7 @@ namespace AspTodo.Repositories
         public async Task<Sharing> GetSharingAsync(string userID, string listID)
         {
             Sharing sharing = await _context.Sharings.Select(s => s)
-                .Where(s => s.ListID == listID && s.ShareeID == userID).FirstOrDefaultAsync();
+                .Where(s => s.ListID == listID && s.ShareeID == userID).AsNoTracking().FirstOrDefaultAsync();
             return sharing;
         }
 

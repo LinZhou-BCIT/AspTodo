@@ -275,32 +275,32 @@ namespace AspTodo.Repositories
             return Mapper.Map<IEnumerable<TodoItemAPIModel>>(items);
         }
 
-        public async Task<bool> ToggleItemCompleteAsync(string userID, string itemID)
+        public async Task<TodoItemAPIModel> ToggleItemCompleteAsync(string userID, string itemID)
         {
             TodoItem item = await _todoItemRepo.GetItemByIDAsync(itemID);
             if (item == null)
             {
-                return false;
+                return null;
             }
             bool isOwner = await _todoListRepo.IsOwnerAsync(userID, item.ListID);
             Sharing checkSharing = await _todoListRepo.GetSharingAsync(userID, item.ListID);
             if (!isOwner && checkSharing == null)
             {
-                return false;
+                return null;
             }
-            bool toggleResult = await _todoItemRepo.ToggleItemCompleteAsync(itemID);
-            if (!toggleResult)
+            TodoItem toggledItem = await _todoItemRepo.ToggleItemCompleteAsync(itemID);
+            if (toggledItem == null)
             {
-                return false;
+                return null;
             }
             else
             {
                 // failed to save
                 if (!(await _todoListRepo.SaveAsync()))
                 {
-                    return false;
+                    return null;
                 }
-                return true;
+                return Mapper.Map<TodoItemAPIModel>(toggledItem);
             }
 
         }

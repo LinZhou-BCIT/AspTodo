@@ -90,12 +90,12 @@ namespace AspTodo.Repositories
         //    return updatedItems;
         //}
 
-        public async Task<bool> ToggleItemCompleteAsync(string itemID)
+        public async Task<TodoItem> ToggleItemCompleteAsync(string itemID)
         {
             TodoItem item = await _context.TodoItems.Where(ti => ti.ItemID == itemID)
                 .FirstOrDefaultAsync();
             item.Completed = !item.Completed;
-            return true;
+            return item;
         }
 
         //// Get largest order for active items in list
